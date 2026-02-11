@@ -10,405 +10,263 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    --bg1:#fff1f6;         /* blush */
-    --bg2:#ffe4ee;         /* soft pink */
-    --ink:#1f2937;         /* slate */
-    --muted:#6b7280;
-    --card: rgba(255,255,255,.62);
-    --stroke: rgba(255, 60, 125, .18);
-    --shadow: 0 24px 60px rgba(255, 20, 120, .18);
-    --primary:#ff2d7a;
-    --primary2:#ff6aa2;
-    --ok:#16a34a;
-    --bad:#dc2626;
-  }
+:root{
+  --bg1:#fff1f6;
+  --bg2:#ffe4ee;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --card: rgba(255,255,255,.62);
+  --stroke: rgba(255, 60, 125, .18);
+  --shadow: 0 24px 60px rgba(255, 20, 120, .18);
+  --primary:#ff2d7a;
+  --primary2:#ff6aa2;
+  --ok:#16a34a;
+  --bad:#dc2626;
+}
 
-  *{ box-sizing:border-box; }
-  body{
-    margin:0;
-    color:var(--ink);
-    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    background:
-      radial-gradient(900px 500px at 20% 10%, rgba(255,45,122,.18), transparent 55%),
-      radial-gradient(700px 460px at 80% 20%, rgba(255,106,162,.18), transparent 55%),
-      radial-gradient(900px 600px at 50% 100%, rgba(255,45,122,.12), transparent 60%),
-      linear-gradient(180deg, var(--bg1), var(--bg2));
-    min-height:100vh;
-  }
+*{ box-sizing:border-box; }
 
-  .wrap{ max-width: 920px; margin: 0 auto; padding: 34px 16px 70px; }
+body{
+  margin:0;
+  color:var(--ink);
+  font-family: Inter, system-ui;
+  background:
+    radial-gradient(900px 500px at 20% 10%, rgba(255,45,122,.18), transparent 55%),
+    radial-gradient(700px 460px at 80% 20%, rgba(255,106,162,.18), transparent 55%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  min-height:100vh;
+}
 
-  .hero{
-    display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
-    background: linear-gradient(135deg, rgba(255,255,255,.75), rgba(255,255,255,.50));
-    border:1px solid var(--stroke);
-    border-radius: 26px;
-    padding: 20px 20px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-  }
+.wrap{ max-width: 920px; margin:auto; padding: 34px 16px 70px; }
 
-  .hero h1{
-    margin:0;
-    font-family: Fraunces, serif;
-    font-weight: 700;
-    font-size: 34px;
-    letter-spacing: .2px;
-  }
+.hero{
+  display:flex; justify-content:space-between; gap:16px;
+  background: rgba(255,255,255,.75);
+  border-radius:26px;
+  padding:20px;
+  box-shadow: var(--shadow);
+}
 
-  .hero p{ margin: 8px 0 0; color: var(--muted); }
+.hero h1{
+  margin:0;
+  font-family: Fraunces, serif;
+  font-size:34px;
+}
 
-  .badge{
-    display:flex; flex-direction:column; gap:8px; align-items:flex-end; min-width: 220px;
-  }
+.pill{
+  background:white;
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+}
 
-  .pill{
-    display:inline-flex; align-items:center; gap:8px;
-    background: rgba(255,255,255,.70);
-    border:1px solid var(--stroke);
-    padding: 10px 12px;
-    border-radius: 999px;
-    font-size: 13px;
-    box-shadow: 0 10px 22px rgba(255,45,122,.12);
-  }
+.btn{
+  background:linear-gradient(135deg, var(--primary), var(--primary2));
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:12px;
+  cursor:pointer;
+}
 
-  .btn{
-    cursor:pointer;
-    background: linear-gradient(135deg, var(--primary), var(--primary2));
-    color:white;
-    border:none;
-    padding: 10px 14px;
-    border-radius: 14px;
-    font-weight: 700;
-    box-shadow: 0 14px 30px rgba(255,45,122,.22);
-    transition: transform .12s ease, filter .12s ease;
-  }
-  .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
-  .btn:active{ transform: translateY(0px); }
+.grid{ margin-top:20px; display:grid; gap:14px; }
 
-  .grid{ display:grid; gap:14px; margin-top: 18px; }
+.card{
+  background:var(--card);
+  border-radius:20px;
+  padding:16px;
+  box-shadow: 0 18px 44px rgba(0,0,0,.08);
+}
 
-  .card{
-    background: var(--card);
-    border: 1px solid var(--stroke);
-    border-radius: 22px;
-    padding: 16px;
-    box-shadow: 0 18px 44px rgba(31,41,55,.10);
-    backdrop-filter: blur(10px);
-    position:relative;
-    overflow:hidden;
-  }
+.qtitle{ font-weight:800; margin-bottom:10px; }
 
-  .card:before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    background: radial-gradient(400px 140px at 20% 0%, rgba(255,45,122,.16), transparent 60%);
-    pointer-events:none;
-  }
+label.choice{
+  display:block;
+  padding:8px;
+  margin:6px 0;
+  border-radius:12px;
+  background:white;
+  cursor:pointer;
+}
 
-  .qhead{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position:relative; }
-  .qtitle{
-    margin:0 0 10px;
-    font-weight: 800;
-    letter-spacing: .1px;
-    font-size: 16px;
-    line-height:1.35;
-  }
+.checkBtn{
+  margin-top:10px;
+  padding:8px 12px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
 
-  .tag{
-    font-size: 12px;
-    padding: 7px 11px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,45,122,.22);
-    background: rgba(255,255,255,.70);
-    color: #8b1240;
-    white-space: nowrap;
-  }
+.msg{ margin-top:10px; font-size:13px; }
+.msg.ok{ color:var(--ok); font-weight:bold; }
+.msg.bad{ color:var(--bad); font-weight:bold; }
 
-  .choices{ display:grid; gap:9px; position:relative; }
-  label.choice{
-    display:flex; gap:10px; align-items:flex-start;
-    padding: 11px 12px;
-    border-radius: 16px;
-    background: rgba(255,255,255,.72);
-    border: 1px solid rgba(31,41,55,.10);
-    cursor:pointer;
-    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  }
-  label.choice:hover{
-    transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(255,45,122,.12);
-    border-color: rgba(255,45,122,.22);
-  }
-  input[type="radio"]{ margin-top: 3px; accent-color: var(--primary); }
+#romanticReveal{
+  display:none;
+  opacity:0;
+  transform: translateY(20px);
+  transition: all .9s ease;
+  text-align:center;
+  margin-top:30px;
+}
 
-  .actions{ display:flex; gap:10px; margin-top: 12px; flex-wrap:wrap; align-items:center; position:relative; }
-  .checkBtn{
-    cursor:pointer;
-    background: rgba(255,255,255,.75);
-    border: 1px solid rgba(255,45,122,.25);
-    color: #8b1240;
-    padding: 10px 12px;
-    border-radius: 14px;
-    font-weight: 800;
-    transition: transform .12s ease, background .12s ease;
-  }
-  .checkBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.90); }
-  .checkBtn:disabled{ opacity:.65; cursor:default; transform:none; }
+#romanticReveal.show{
+  opacity:1;
+  transform: translateY(0);
+}
 
-  .msg{ margin-top:10px; font-size: 13px; color: var(--muted); position:relative; }
-  .msg.ok{ color: var(--ok); font-weight:800; }
-  .msg.bad{ color: var(--bad); font-weight:800; }
-
-  /* 💘 Reveal section */
-  #romanticReveal{
-    opacity:0;
-    transform: translateY(20px);
-    transition: all .9s ease;
-    text-align:center;
-    margin-top: 22px;
-  }
-  #romanticReveal.show{ opacity:1; transform: translateY(0); }
-  #romanticReveal h2{
-    font-family: Fraunces, serif;
-    margin: 0 0 10px;
-    font-size: 26px;
-    color:#8b1240;
-  }
-  #romanticReveal img{
-    width:100%;
-    max-width: 640px;
-    border-radius: 26px;
-    border: 1px solid rgba(255,45,122,.20);
-    box-shadow: 0 28px 70px rgba(255,45,122,.20);
-  }
-
-  /* Tiny floating hearts */
-  .hearts{
-    position: fixed;
-    inset: 0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index: 0;
-  }
-  .heart{
-    position:absolute;
-    bottom:-30px;
-    font-size: 18px;
-    opacity:.18;
-    animation: floatUp linear infinite;
-    filter: blur(.1px);
-  }
-  @keyframes floatUp{
-    from{ transform: translateY(0) translateX(0) rotate(0deg); }
-    to{ transform: translateY(-120vh) translateX(40px) rotate(18deg); }
-  }
-  .content{ position:relative; z-index:1; }
-
-  @media (max-width: 640px){
-    .hero{ flex-direction:column; }
-    .badge{ align-items:flex-start; min-width: unset; }
-    .hero h1{ font-size: 30px; }
-  }
+#romanticReveal img{
+  width:100%;
+  max-width:640px;
+  border-radius:26px;
+  box-shadow:0 30px 70px rgba(255,45,122,.2);
+}
 </style>
 </head>
 
 <body>
-  <div class="hearts" id="hearts"></div>
-
-  <div class="wrap content">
-    <div class="hero">
-      <div>
-        <h1>Valentine Quiz 💘</h1>
-        <p>Answer questions 1–10 correctly to unlock question 11.</p>
-      </div>
-      <div class="badge">
-        <div class="pill" id="progressPill">Progress: 0/10 correct</div>
-        <button class="btn" id="resetBtn" type="button">Reset</button>
-      </div>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Valentine Quiz 💘</h1>
+      <p>Answer questions 1–10 correctly to unlock question 11.</p>
     </div>
-
-    <div class="grid" id="quiz"></div>
-
-    <!-- ❤️ Image reveal (only shows when Q11 unlocks) -->
-    <div id="romanticReveal">
-      <h2>For You ❤️</h2>
-      <!-- IMPORTANT: ensure your repo has a file named exactly "valentine.jpg" in the same folder as index.html -->
-      <img src="valentine.jpg" alt="Us">
+    <div>
+      <div class="pill" id="progressPill">Progress: 0/10 correct</div>
+      <button class="btn" id="resetBtn">Reset</button>
     </div>
   </div>
 
+  <div class="grid" id="quiz"></div>
+
+  <div id="romanticReveal">
+    <h2>For You ❤️</h2>
+    <img src="valentine.jpg" alt="Us">
+  </div>
+</div>
+
 <script>
-  // Floating hearts (lightweight, subtle)
-  const heartsEl = document.getElementById("hearts");
-  const heartChars = ["❤","💗","💖","💘"];
-  for (let i=0;i<18;i++){
-    const s = document.createElement("div");
-    s.className = "heart";
-    s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
-    s.style.left = Math.random()*100 + "vw";
-    s.style.animationDuration = (16 + Math.random()*14) + "s";
-    s.style.animationDelay = (-Math.random()*20) + "s";
-    s.style.fontSize = (14 + Math.random()*14) + "px";
-    heartsEl.appendChild(s);
+const QUESTIONS = [
+{ id:1, text:"When did we first go out?", options:["December 15th","December 17th","December 18th","December 19th"], correctIndex:1 },
+{ id:2, text:"When did we have our first Spotify jam session?", options:["December 11th","December 12th","December 13th","December 14th"], correctIndex:1 },
+{ id:3, text:"Who is my second favorite football player?", options:["Frenkie De Jong","Pedri","Ronaldinho","Neymar"], correctIndex:3 },
+{ id:4, text:"How old is Ace?", options:["6","7","8","9"], correctIndex:2 },
+{ id:5, text:"What was the first song I shared with you on WhatsApp?", options:["This is the way a heart breaks","Lions den","Back to December","Sweet contradiction"], correctIndex:2 },
+{ id:6, text:"Where was I when we did our first ever wordle?", options:["At home","At Murads","In the car","At the gym"], correctIndex:2 },
+{ id:7, text:"What did I use my first ever paycheck for?", options:["A 9 iron for my dad","An ipad for my dad","An Apple watch for my dad","A Samsung watch for my dad"], correctIndex:3 },
+{ id:8, text:"What major did I switch to before changing to Chemical Engineering?", options:["Software Engineering","Computer Science","Business","Physics"], correctIndex:1 },
+{ id:9, text:"Which year did I “BREAK MY KNEE”?", options:["2021","2022","2023","2024"], correctIndex:1 },
+{ id:10, text:"What was the name of the dog I had before Ace?", options:["Dex","Jack","Blue","Tommy"], correctIndex:0 },
+{ id:11, text:"Soph, will you be my valentine?", options:["Yes","No","Maybe","So","ALL OF THE ABOVE"], correctIndex:4 }
+];
+
+const quizEl = document.getElementById("quiz");
+const progressPill = document.getElementById("progressPill");
+const resetBtn = document.getElementById("resetBtn");
+const romanticReveal = document.getElementById("romanticReveal");
+
+let correctSet = new Set();
+
+function isUnlocked(){
+  for(let i=1;i<=10;i++){
+    if(!correctSet.has(i)) return false;
   }
+  return true;
+}
 
-  const QUESTIONS = [
-    { id: 1, text: "When did we first go out?", options: ["December 15th","December 17th","December 18th","December 19th"], correctIndex: 1 },
-    { id: 2, text: "When did we have our first Spotify jam session?", options: ["December 11th","December 12th","December 13th","December 14th"], correctIndex: 1 },
-    { id: 3, text: "Who is my second favorite football player?", options: ["Frenkie De Jong","Pedri","Ronaldinho","Neymar"], correctIndex: 3 },
-    { id: 4, text: "How old is Ace?", options: ["6","7","8","9"], correctIndex: 2 },
-    { id: 5, text: "What was the first song I shared with you on WhatsApp?", options: ["This is the way a heart breaks","Lions den","Back to December","Sweet contradiction"], correctIndex: 2 },
-    { id: 6, text: "Where was I when we did our first ever wordle?", options: ["At home","At Murads","In the car","At the gym"], correctIndex: 2 },
-    { id: 7, text: "What did I use my first ever paycheck for?", options: ["A 9 iron for my dad","An ipad for my dad","An Apple watch for my dad","A Samsung watch for my dad"], correctIndex: 3 },
-    { id: 8, text: "What major did I switch to before changing to Chemical Engineering?", options: ["Software Engineering","Computer Science","Business","Physics"], correctIndex: 1 },
-    { id: 9, text: "Which year did I “BREAK MY KNEE”?", options: ["2021","2022","2023","2024"], correctIndex: 1 },
-    { id: 10, text: "What was the name of the dog I had before Ace?", options: ["Dex","Jack","Blue","Tommy"], correctIndex: 0 },
-    { id: 11, text: "Soph, will you be my valentine?", options: ["Yes","No","Maybe","So","ALL OF THE ABOVE"], correctIndex: 4 },
-  ];
+function showReveal(){
+  romanticReveal.style.display="block";
+  requestAnimationFrame(()=>{
+    romanticReveal.classList.add("show");
+  });
+}
 
-  const quizEl = document.getElementById("quiz");
-  const progressPill = document.getElementById("progressPill");
-  const resetBtn = document.getElementById("resetBtn");
-  const romanticReveal = document.getElementById("romanticReveal");
-
-  const state = { correct: new Set() };
-
-  function isUnlocked(){
-    for (let i=1;i<=10;i++) if(!state.correct.has(i)) return false;
-    return true;
+function updateProgress(){
+  let count=0;
+  for(let i=1;i<=10;i++){
+    if(correctSet.has(i)) count++;
   }
+  progressPill.textContent=`Progress: ${count}/10 correct`;
+}
 
-  function updateProgress(){
-    let n=0;
-    for (let i=1;i<=10;i++) if(state.correct.has(i)) n++;
-    progressPill.textContent = `Progress: ${n}/10 correct`;
-  }
+function render(){
+  quizEl.innerHTML="";
+  if(isUnlocked()) showReveal();
 
-  function render(){
-    quizEl.innerHTML = "";
+  QUESTIONS.forEach(q=>{
+    if(q.id===11 && !isUnlocked()) return;
 
-    // ✅ Ensure reveal stays in sync with unlock state
-    if (isUnlocked()) romanticReveal.classList.add("show");
+    const card=document.createElement("div");
+    card.className="card";
 
-    QUESTIONS.forEach(q => {
-      if (q.id === 11 && !isUnlocked()) return;
+    const title=document.createElement("div");
+    title.className="qtitle";
+    title.textContent=`Q${q.id}. ${q.text}`;
+    card.appendChild(title);
 
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const head = document.createElement("div");
-      head.className = "qhead";
-
-      const title = document.createElement("div");
-      title.className = "qtitle";
-      title.textContent = `Q${q.id}. ${q.text}`;
-
-      const tag = document.createElement("div");
-      tag.className = "tag";
-      tag.textContent = state.correct.has(q.id) ? "Correct ✓" : (q.id === 11 ? "Unlocked" : "Not answered");
-
-      head.appendChild(title);
-      head.appendChild(tag);
-
-      const choices = document.createElement("div");
-      choices.className = "choices";
-
-      q.options.forEach((opt, idx) => {
-        const label = document.createElement("label");
-        label.className = "choice";
-
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = `q${q.id}`;
-        radio.value = String(idx);
-        radio.disabled = state.correct.has(q.id);
-
-        const span = document.createElement("span");
-        span.textContent = opt;
-
-        label.appendChild(radio);
-        label.appendChild(span);
-        choices.appendChild(label);
-      });
-
-      const actions = document.createElement("div");
-      actions.className = "actions";
-
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "checkBtn";
-      btn.textContent = state.correct.has(q.id) ? "Locked in" : "Check Answer";
-      btn.disabled = state.correct.has(q.id);
-
-      const msg = document.createElement("div");
-      msg.className = "msg";
-      msg.textContent = "Pick an option and click Check Answer.";
-
-      btn.addEventListener("click", () => {
-        const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
-        if (!selected){
-          msg.className = "msg bad";
-          msg.textContent = "Choose an option first 🙂";
-          return;
-        }
-
-        const chosen = Number(selected.value);
-
-        if (chosen === q.correctIndex){
-          const wasUnlocked = isUnlocked();   // ✅ before marking correct
-          state.correct.add(q.id);
-          const nowUnlocked = isUnlocked();   // ✅ after marking correct
-
-          msg.className = "msg ok";
-          msg.textContent = "Correct! Locked in 💘";
-
-          // Lock radios + button
-          document.querySelectorAll(`input[name="q${q.id}"]`).forEach(r => r.disabled = true);
-          btn.disabled = true;
-          btn.textContent = "Locked in";
-          updateProgress();
-
-          // ✅ Show reveal the moment the quiz becomes unlocked (no matter which question was last)
-          if (!wasUnlocked && nowUnlocked){
-            romanticReveal.classList.add("show");
-            render(); // show Q11 now
-            setTimeout(() => romanticReveal.scrollIntoView({ behavior:"smooth", block:"start" }), 200);
-          } else {
-            // keep UI synced
-            if (nowUnlocked) romanticReveal.classList.add("show");
-            render();
-          }
-        } else {
-          msg.className = "msg bad";
-          msg.textContent = "Not quite — try again 😅";
-        }
-      });
-
-      actions.appendChild(btn);
-
-      card.appendChild(head);
-      card.appendChild(choices);
-      card.appendChild(actions);
-      card.appendChild(msg);
-
-      quizEl.appendChild(card);
+    q.options.forEach((opt,i)=>{
+      const label=document.createElement("label");
+      label.className="choice";
+      label.innerHTML=`<input type="radio" name="q${q.id}" value="${i}"> ${opt}`;
+      card.appendChild(label);
     });
 
-    updateProgress();
-  }
+    const btn=document.createElement("button");
+    btn.className="checkBtn";
+    btn.textContent="Check Answer";
 
-  resetBtn.addEventListener("click", () => {
-    state.correct.clear();
-    romanticReveal.classList.remove("show");
-    render();
-    window.scrollTo({ top: 0, behavior:"smooth" });
+    const msg=document.createElement("div");
+    msg.className="msg";
+
+    btn.onclick=()=>{
+      const selected=document.querySelector(`input[name="q${q.id}"]:checked`);
+      if(!selected){
+        msg.className="msg bad";
+        msg.textContent="Choose an option first 🙂";
+        return;
+      }
+
+      const wasUnlocked=isUnlocked();
+      const chosen=Number(selected.value);
+
+      if(chosen===q.correctIndex){
+        correctSet.add(q.id);
+        msg.className="msg ok";
+        msg.textContent="Correct! Locked in 💘";
+        updateProgress();
+
+        const nowUnlocked=isUnlocked();
+
+        if(!wasUnlocked && nowUnlocked){
+          showReveal();
+          render();
+          setTimeout(()=>romanticReveal.scrollIntoView({behavior:"smooth"}),200);
+        } else {
+          render();
+        }
+      } else {
+        msg.className="msg bad";
+        msg.textContent="Not quite — try again 😅";
+      }
+    };
+
+    card.appendChild(btn);
+    card.appendChild(msg);
+    quizEl.appendChild(card);
   });
 
+  updateProgress();
+}
+
+resetBtn.onclick=()=>{
+  correctSet.clear();
+  romanticReveal.style.display="none";
+  romanticReveal.classList.remove("show");
   render();
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+
+render();
 </script>
 </body>
 </html>
-
