@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valentine Quiz</title>
+  <style>
+    :root { --ok:#16a34a; --bad:#dc2626; --muted:#6b7280; --card:#111827; --bg:#0b1220; --text:#e5e7eb; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background: linear-gradient(180deg, #071024, #0b1220); color: var(--text); }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+    h1 { font-size: 28px; margin: 0 0 6px; }
+    .sub { color: var(--muted); margin: 0 0 18px; }
+    .topbar { display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin: 14px 0 18px; }
+    .pill { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); padding: 8px 12px; border-radius: 999px; font-size: 13px; color:#d1d5db; }
+    .btn { cursor:pointer; background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color: var(--text); padding: 10px 12px; border-radius: 10px; font-weight: 600; }
+    .btn:hover { background: rgba(255,255,255,.12); }
+    .grid { display:grid; gap: 14px; }
+    .card { background: rgba(17,24,39,.82); border: 1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .qhead { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .qtitle { font-size: 16px; font-weight: 700; margin: 0 0 10px; line-height:1.35; }
+    .tag { font-size: 12px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color:#d1d5db; background: rgba(255,255,255,.06); white-space:nowrap; }
+    .choices { display:grid; gap: 8px; margin-top: 10px; }
+    label.choice { display:flex; gap:10px; align-items:flex-start; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10); cursor:pointer; }
+    label.choice:hover { background: rgba(255,255,255,.09); }
+    input[type="radio"] { margin-top: 3px; }
+    .actions { display:flex; gap:10px; margin-top: 12px; flex-wrap:wrap; align-items:center; }
+    .msg { font-size: 13px; margin-top: 10px; color: var(--muted); }
+    .msg.ok { color: var(--ok); font-weight:700; }
+    .msg.bad { color: var(--bad); font-weight:700; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Valentine Quiz 💘</h1>
+    <p class="sub">Answer questions 1–10 correctly to unlock question 11.</p>
+
+    <div class="topbar">
+      <div class="pill" id="progressPill">Progress: 0/10 correct</div>
+      <button class="btn" id="resetBtn" type="button">Reset Quiz</button>
+    </div>
+
+    <div class="grid" id="quiz"></div>
+
+    <div class="card hidden" id="unlockCard" aria-live="polite">
+      <div class="qhead">
+        <div>
+          <div class="qtitle">🎉 You unlocked Question 11!</div>
+          <div class="msg">Scroll down to answer it.</div>
+        </div>
+        <div class="tag">Unlocked</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Correct answers are detected and "(Correct)" removed.
+    // Q11 is hidden until Q1–Q10 are all locked-in as correct.
+    const QUESTIONS = [
+      { id: 1, text: "When did we first go out?", options: ["December 15th","December 17th","December 18th","December 19th"], correctIndex: 1 },
+      { id: 2, text: "When did we have our first Spotify jam session?", options: ["December 11th","December 12th","December 13th","December 14th"], correctIndex: 1 },
+      { id: 3, text: "Who is my second favorite football player?", options: ["Frenkie De Jong","Pedri","Ronaldinho","Neymar"], correctIndex: 3 },
+      { id: 4, text: "How old is Ace?", options: ["6","7","8","9"], correctIndex: 2 },
+      { id: 5, text: "What was the first song I shared with you on WhatsApp?", options: ["This is the way a heart breaks","Lions den","Back to December","Sweet contradiction"], correctIndex: 2 },
+      { id: 6, text: "Where was I when we did our first ever wordle?", options: ["At home","At Murads","In the car","At the gym"], correctIndex: 2 },
+      { id: 7, text: "What did I use my first ever paycheck for?", options: ["A 9 iron for my dad","An ipad for my dad","An Apple watch for my dad","A Samsung watch for my dad"], correctIndex: 3 },
+      { id: 8, text: "What major did I switch to before changing to Chemical Engineering?", options: ["Software Engineering","Computer Science","Business","Physics"], correctIndex: 1 },
+      { id: 9, text: "Which year did I “BREAK MY KNEE”?", options: ["2021","2022","2023","2024"], correctIndex: 1 },
+      { id: 10, text: "What was the name of the dog I had before Ace?", options: ["Dex","Jack","Blue","Tommy"], correctIndex: 0 },
+      { id: 11, text: "Soph, will you be my valentine?", options: ["Yes","No","Maybe","So","ALL OF THE ABOVE"], correctIndex: 4 },
+    ];
+
+    const state = {
+      answeredCorrectly: new Set(), // question ids locked-in as correct
+    };
+
+    const quizEl = document.getElementById("quiz");
+    const progressPill = document.getElementById("progressPill");
+    const unlockCard = document.getElementById("unlockCard");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function isUnlocked() {
+      for (let i = 1; i <= 10; i++) if (!state.answeredCorrectly.has(i)) return false;
+      return true;
+    }
+
+    function updateProgressAndUnlock() {
+      let correctCount = 0;
+      for (let i = 1; i <= 10; i++) if (state.answeredCorrectly.has(i)) correctCount++;
+      progressPill.textContent = `Progress: ${correctCount}/10 correct`;
+
+      const unlocked = isUnlocked();
+      const q11Card = document.getElementById("card-q11");
+
+      if (unlocked) {
+        unlockCard.classList.remove("hidden");
+        if (q11Card) q11Card.classList.remove("hidden");
+
+        const tag = document.getElementById("tag-q11");
+        const msg = document.getElementById("msg-q11");
+        if (tag && !state.answeredCorrectly.has(11)) tag.textContent = "Ready";
+        if (msg && !state.answeredCorrectly.has(11)) {
+          msg.className = "msg";
+          msg.textContent = "Select an option, then click “Check Answer”.";
+        }
+      } else {
+        unlockCard.classList.add("hidden");
+        if (q11Card) q11Card.classList.add("hidden");
+      }
+    }
+
+    function render() {
+      quizEl.innerHTML = "";
+
+      QUESTIONS.forEach((q) => {
+        const isQ11 = q.id === 11;
+        const shouldHide = isQ11 && !isUnlocked();
+
+        const card = document.createElement("div");
+        card.className = "card" + (shouldHide ? " hidden" : "");
+        card.id = `card-q${q.id}`;
+
+        const head = document.createElement("div");
+        head.className = "qhead";
+
+        const left = document.createElement("div");
+        const title = document.createElement("div");
+        title.className = "qtitle";
+        title.textContent = `Q${q.id}. ${q.text}`;
+        left.appendChild(title);
+
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        tag.id = `tag-q${q.id}`;
+        tag.textContent = state.answeredCorrectly.has(q.id) ? "Correct ✓" : (isQ11 ? "Locked" : "Not answered");
+
+        head.appendChild(left);
+        head.appendChild(tag);
+
+        const choices = document.createElement("div");
+        choices.className = "choices";
+
+        q.options.forEach((opt, optIdx) => {
+          const label = document.createElement("label");
+          label.className = "choice";
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q${q.id}`;
+          radio.value = String(optIdx);
+          radio.disabled = state.answeredCorrectly.has(q.id); // lock once correct
+
+          const span = document.createElement("span");
+          span.textContent = opt;
+
+          label.appendChild(radio);
+          label.appendChild(span);
+          choices.appendChild(label);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const checkBtn = document.createElement("button");
+        checkBtn.type = "button";
+        checkBtn.className = "btn";
+        checkBtn.textContent = state.answeredCorrectly.has(q.id) ? "Locked in" : "Check Answer";
+        checkBtn.disabled = state.answeredCorrectly.has(q.id);
+
+        const msg = document.createElement("div");
+        msg.className = "msg";
+        msg.id = `msg-q${q.id}`;
+        msg.textContent = isQ11 && !isUnlocked()
+          ? "This question unlocks only after Q1–Q10 are all correct."
+          : "Select an option, then click “Check Answer”.";
+
+        checkBtn.addEventListener("click", () => {
+          const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+          if (!selected) {
+            msg.className = "msg bad";
+            msg.textContent = "Please select an option.";
+            return;
+          }
+
+          const chosen = Number(selected.value);
+          const correct = chosen === q.correctIndex;
+
+          if (correct) {
+            state.answeredCorrectly.add(q.id);
+            msg.className = "msg ok";
+            msg.textContent = "Correct! Locked in.";
+            document.getElementById(`tag-q${q.id}`).textContent = "Correct ✓";
+
+            document.querySelectorAll(`input[name="q${q.id}"]`).forEach(r => r.disabled = true);
+            checkBtn.disabled = true;
+            checkBtn.textContent = "Locked in";
+
+            updateProgressAndUnlock();
+          } else {
+            msg.className = "msg bad";
+            msg.textContent = "Not quite — try again.";
+          }
+        });
+
+        actions.appendChild(checkBtn);
+
+        card.appendChild(head);
+        card.appendChild(choices);
+        card.appendChild(actions);
+        card.appendChild(msg);
+
+        quizEl.appendChild(card);
+      });
+
+      updateProgressAndUnlock();
+    }
+
+    function resetQuiz() {
+      state.answeredCorrectly.clear();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    resetBtn.addEventListener("click", resetQuiz);
+
+    render();
+  </script>
+</body>
+</html>
