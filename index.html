@@ -162,8 +162,6 @@
   .msg.ok{ color: var(--ok); font-weight:800; }
   .msg.bad{ color: var(--bad); font-weight:800; }
 
-  .hidden{ display:none; }
-
   /* 💘 Reveal section */
   #romanticReveal{
     opacity:0;
@@ -237,6 +235,7 @@
     <!-- ❤️ Image reveal (only shows when Q11 unlocks) -->
     <div id="romanticReveal">
       <h2>For You ❤️</h2>
+      <!-- IMPORTANT: ensure your repo has a file named exactly "valentine.jpg" in the same folder as index.html -->
       <img src="valentine.jpg" alt="Us">
     </div>
   </div>
@@ -290,6 +289,9 @@
 
   function render(){
     quizEl.innerHTML = "";
+
+    // ✅ Ensure reveal stays in sync with unlock state
+    if (isUnlocked()) romanticReveal.classList.add("show");
 
     QUESTIONS.forEach(q => {
       if (q.id === 11 && !isUnlocked()) return;
@@ -352,27 +354,32 @@
           msg.textContent = "Choose an option first 🙂";
           return;
         }
+
         const chosen = Number(selected.value);
+
         if (chosen === q.correctIndex){
+          const wasUnlocked = isUnlocked();   // ✅ before marking correct
           state.correct.add(q.id);
+          const nowUnlocked = isUnlocked();   // ✅ after marking correct
+
           msg.className = "msg ok";
           msg.textContent = "Correct! Locked in 💘";
 
-          // Lock radios
+          // Lock radios + button
           document.querySelectorAll(`input[name="q${q.id}"]`).forEach(r => r.disabled = true);
           btn.disabled = true;
           btn.textContent = "Locked in";
           updateProgress();
 
-          // If Q10 just became correct, unlock Q11 + reveal image
-          if (q.id === 10 && isUnlocked()){
+          // ✅ Show reveal the moment the quiz becomes unlocked (no matter which question was last)
+          if (!wasUnlocked && nowUnlocked){
             romanticReveal.classList.add("show");
-            render(); // now show Q11
-            // Scroll to reveal nicely
+            render(); // show Q11 now
             setTimeout(() => romanticReveal.scrollIntoView({ behavior:"smooth", block:"start" }), 200);
           } else {
-            // Re-render to update tags / show Q11 when ready
-            if (isUnlocked()) render();
+            // keep UI synced
+            if (nowUnlocked) romanticReveal.classList.add("show");
+            render();
           }
         } else {
           msg.className = "msg bad";
@@ -404,3 +411,4 @@
 </script>
 </body>
 </html>
+
